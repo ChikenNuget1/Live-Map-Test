@@ -49,28 +49,30 @@ latest_location = {
             print(f"[serial_reader] Serial error: {e}. Retrying in 5s...")
             time.sleep(5)"""
 
-def serial_reader(port=None, baudrate=None):
-    """Simulate reading from a serial file instead of hardware."""
+def serial_reader(*args, **kwargs):
+    """Fake GPS updates for testing without hardware."""
+    import math
+    import time
+
+    angle = 0
+
     while True:
-        with open("fake_serial.txt", "r") as f:
-            for line in f:
-                parts = line.strip().split(",")
-                if len(parts) < 2:
-                    continue
+        # Create a fake moving GPS point in Auckland
+        lat = -36.8527673 + 0.001 * math.sin(angle)
+        lon = 174.770338 + 0.001 * math.cos(angle)
+        alt = 435
 
-                lat = float(parts[0])
-                lon = float(parts[1])
-                alt = float(parts[2]) if len(parts) > 2 else None
+        latest_location.update({
+            "lat": lat,
+            "lon": lon,
+            "alt": alt,
+            "timestamp": time.time()
+        })
 
-                latest_location.update({
-                    "lat": lat,
-                    "lon": lon,
-                    "alt": alt,
-                    "timestamp": time.time()
-                })
+        print("[fake] Updated:", latest_location)
 
-                print("[file] Updated:", latest_location)
-                time.sleep(2)
+        angle += 0.1
+        time.sleep(1)
 
 
 @api_bp.route("/location")

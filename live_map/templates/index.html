@@ -57,7 +57,7 @@
         const lonNum = Number(lon);
 
         marker.setLatLng([latNum, lonNum]);
-        map.setView([latNum, lonNum], 16);
+        map.setView([latNum, lonNum]);
 
         const date = timestamp ? new Date(timestamp * 1000) : null;
         statusEl.textContent =
@@ -71,7 +71,7 @@
     }
 
     fetchLocation();
-    setInterval(fetchLocation, 3000);
+    setInterval(fetchLocation, 2000);
   </script>
 </body>
 </html>
