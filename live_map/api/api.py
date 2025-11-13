@@ -5,7 +5,6 @@ import serial
 
 api_bp = Blueprint("api", __name__)
 
-# Shared location state
 latest_location = {
     "lat": None,
     "lon": None,
@@ -57,7 +56,6 @@ def serial_reader(*args, **kwargs):
     angle = 0
 
     while True:
-        # Create a fake moving GPS point in Auckland
         lat = -36.8527673 + 0.001 * math.sin(angle)
         lon = 174.770338 + 0.001 * math.cos(angle)
         alt = 435

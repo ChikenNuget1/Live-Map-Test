@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>LoRa GPS Tracker</title>
 
-  <!-- Leaflet CSS -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -12,14 +11,12 @@
     crossorigin=""
   />
 
-  <!-- Your CSS from Flask static -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div id="map"></div>
   <div id="status">Waiting for GPS data...</div>
 
-  <!-- Leaflet JS -->
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
@@ -37,6 +34,7 @@
     let marker = L.marker([0, 0]).addTo(map);
     const statusEl = document.getElementById("status");
 
+    // Get location data
     async function fetchLocation() {
       try {
         const res = await fetch("/api/location");
@@ -56,9 +54,11 @@
         const latNum = Number(lat);
         const lonNum = Number(lon);
 
+        // Set marker and map to the new lat and long
         marker.setLatLng([latNum, lonNum]);
         map.setView([latNum, lonNum]);
 
+        // Get date and print status to console
         const date = timestamp ? new Date(timestamp * 1000) : null;
         statusEl.textContent =
           `Lat: ${latNum.toFixed(6)}, Lon: ${lonNum.toFixed(6)}` +
@@ -70,6 +70,7 @@
       }
     }
 
+    // Refresh every 2 seconds
     fetchLocation();
     setInterval(fetchLocation, 2000);
   </script>
