@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LoRa GPS Tracker</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <!-- Your CSS from Flask static -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div id="map"></div>
+  <div id="status">Waiting for GPS data...</div>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script>
+    const map = L.map("map").setView([0, 0], 2);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap contributors",
+    }).addTo(map);
+
+    let marker = L.marker([0, 0]).addTo(map);
+    const statusEl = document.getElementById("status");
+
+    async function fetchLocation() {
+      try {
+        const res = await fetch("/api/location");
+        if (!res.ok) {
+          statusEl.textContent = "No location data yet...";
+          return;
+        }
+
+        const data = await res.json();
+        const { lat, lon, alt, timestamp } = data;
+
+        if (lat == null || lon == null) {
+          statusEl.textContent = "No valid coordinates.";
+          return;
+        }
+
+        const latNum = Number(lat);
+        const lonNum = Number(lon);
+
+        marker.setLatLng([latNum, lonNum]);
+        map.setView([latNum, lonNum], 16);
+
+        const date = timestamp ? new Date(timestamp * 1000) : null;
+        statusEl.textContent =
+          `Lat: ${latNum.toFixed(6)}, Lon: ${lonNum.toFixed(6)}` +
+          (alt != null ? `, Alt: ${alt} m` : "") +
+          (date ? ` (updated: ${date.toLocaleTimeString()})` : "");
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Error talking to backend.";
+      }
+    }
+
+    fetchLocation();
+    setInterval(fetchLocation, 3000);
+  </script>
+</body>
+</html>
