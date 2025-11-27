@@ -13,7 +13,7 @@ latest_location = {
 }
 
 
-"""def serial_reader(port="COM5", baudrate=9600):
+def serial_reader(port="COM3", baudrate=9600):
     # Background thread to read serial GPS from LoRa receiver.
     global latest_location
 
@@ -28,8 +28,8 @@ latest_location = {
 
                     parts = line.split(",")
                     try:
-                        lat = float(parts[0])
-                        lon = float(parts[1])
+                        lat = float(parts[0].split(":")[1])
+                        lon = float(parts[1].split(":")[1])
                         alt = float(parts[2]) if len(parts) > 2 else None
                     except (ValueError, IndexError):
                         print(f"[serial_reader] Bad line: {line}")
@@ -46,32 +46,7 @@ latest_location = {
 
         except serial.SerialException as e:
             print(f"[serial_reader] Serial error: {e}. Retrying in 5s...")
-            time.sleep(5)"""
-
-def serial_reader(*args, **kwargs):
-    """Fake GPS updates for testing without hardware."""
-    import math
-    import time
-
-    angle = 0
-
-    while True:
-        lat = -36.8527673 + 0.001 * math.sin(angle)
-        lon = 174.770338 + 0.001 * math.cos(angle)
-        alt = 435
-
-        latest_location.update({
-            "lat": lat,
-            "lon": lon,
-            "alt": alt,
-            "timestamp": time.time()
-        })
-
-        print("[fake] Updated:", latest_location)
-
-        angle += 0.1
-        time.sleep(1)
-
+            time.sleep(5)
 
 @api_bp.route("/location")
 def api_location():

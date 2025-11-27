@@ -14,8 +14,7 @@ def create_app():
     app.register_blueprint(api_bp, url_prefix="/api")
 
     # Start serial-reading thread
-    t = threading.Thread(target=serial_reader, daemon=True)
-    t.start()
+    threading.Thread(target=serial_reader, args=("COM3", 9600), daemon=True).start()
 
     # Route for home page (map)
     @app.route("/")
