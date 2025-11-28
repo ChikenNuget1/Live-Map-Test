@@ -25,11 +25,15 @@
 
   <script>
     const map = L.map("map").setView([0, 0], 2);
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: "&copy; OpenStreetMap contributors",
-    }).addTo(map);
+  // Add a way to swap between, satellite, terrain, and minimal
+    L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+  {
+    maxZoom: 20,
+    attribution:
+      "Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and others"
+  }
+).addTo(map);
 
     let marker = L.marker([0, 0]).addTo(map);
     const statusEl = document.getElementById("status");
