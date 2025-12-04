@@ -23,6 +23,9 @@ def serial_reader(port="COM3", baudrate=9600):
                 print(f"[serial_reader] Listening on {port}")
                 while True:
                     line = ser.readline().decode(errors="ignore").strip()
+                    # If the data from serial monitor is encoded, uncomment below.
+                    # Else leave as-is
+                    # line = ser.readline().decode('utf-8').strip()
                     if not line:
                         continue
 
