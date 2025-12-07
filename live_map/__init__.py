@@ -4,6 +4,8 @@ import threading
 
 
 def create_app():
+    """Initialize the flask app"""
+    # Initialise app
     app = Flask(
         __name__,
         static_folder="static",       # live_map/static
@@ -14,7 +16,7 @@ def create_app():
     app.register_blueprint(api_bp, url_prefix="/api")
 
     # Start serial-reading thread
-    threading.Thread(target=serial_reader, args=("COM3", 9600), daemon=True).start()
+    threading.Thread(target=serial_reader, args=("COM5", 115200), daemon=True).start()
 
     # Route for home page (map)
     @app.route("/")

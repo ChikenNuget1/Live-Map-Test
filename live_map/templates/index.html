@@ -25,7 +25,8 @@
 
   <script>
     const map = L.map("map").setView([0, 0], 2);
-  // Add a way to swap between, satellite, terrain, and minimal
+
+    // Map we will be using
     L.tileLayer(
   "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
   {
@@ -35,13 +36,16 @@
   }
 ).addTo(map);
 
-    let marker = L.marker([0, 0]).addTo(map);
+    let marker = L.marker([0, 0]).addTo(map); // Add marker to the map
     const statusEl = document.getElementById("status");
 
-    // Get location data
+    // Fetch location data
     async function fetchLocation() {
       try {
+        // Check if location data exists
         const res = await fetch("/api/location");
+
+        // If location data does not exist
         if (!res.ok) {
           statusEl.textContent = "No location data yet...";
           return;
